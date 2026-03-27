@@ -1,10 +1,10 @@
 import {
   Users, Package, ShoppingCart, ShoppingBag, Landmark, FileText, BarChart3, Plug,
-  CheckCircle2, ArrowRight, Star, ChevronDown, Mail, Phone, MapPin, Shield,
-  Zap, Clock, Database, TrendingUp, Headphones, Globe,
+  CheckCircle2, ArrowRight, Star, ChevronDown, Mail, Phone, MapPin,
 } from 'lucide-react'
 import MobileMenu from '@/components/landing/MobileMenu'
 import PricingToggle from '@/components/landing/PricingToggle'
+import WhyUsCarousel from '@/components/landing/WhyUsCarousel'
 
 /* ===== VERI ===== */
 
@@ -107,43 +107,6 @@ const faqs = [
   },
 ]
 
-const whyUs = [
-  {
-    icon: Shield,
-    title: 'Rol Tabanlı Yetkilendirme',
-    desc: 'Ekip üyelerine özel erişim hakları tanımlayın, veri güvenliğini sağlayın.',
-  },
-  {
-    icon: Zap,
-    title: 'Gerçek Zamanlı Raporlar',
-    desc: 'Anlık finansal durum takibi, canlı dashboard ve otomatik bildirimler.',
-  },
-  {
-    icon: Clock,
-    title: 'Hızlı Kurulum',
-    desc: '5 dakikada hesabınızı oluşturun, verilerinizi aktarın ve kullanmaya başlayın.',
-  },
-  {
-    icon: Database,
-    title: 'Güvenli Altyapı',
-    desc: 'RLS ile veri izolasyonu, şifreli bağlantılar ve otomatik yedekleme.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Ölçeklenebilir Yapı',
-    desc: 'İşletmeniz büyüdükçe platform sizinle büyür. Kullanıcı ve veri sınırı yok.',
-  },
-  {
-    icon: Headphones,
-    title: '7/24 Destek',
-    desc: 'Uzman destek ekibimiz sorularınızda her zaman yanınızda.',
-  },
-  {
-    icon: Globe,
-    title: "Türkiye'ye Uyumlu",
-    desc: "GİB, e-Fatura, e-Arşiv ve KVKK — Türkiye mevzuatıyla tam uyumlu.",
-  },
-]
 
 /* ===== STILLER ===== */
 
@@ -647,50 +610,22 @@ export default function LandingPage() {
       </section>
 
       {/* ===== NEDEN ALTÜST ===== */}
-      <section style={s.section}>
-        <p style={{ ...s.sectionSubtitle, marginBottom: 8, fontSize: '0.82rem', color: 'var(--landing-gold)' }}>
-          AVANTAJLAR
-        </p>
-        <h2 style={s.sectionTitle}>Neden <span style={s.goldText}>AltÜst?</span></h2>
-        <p style={s.sectionSubtitle}>
-          Sadece bir muhasebe yazılımı değil, işletmenizin dijital dönüşüm ortağı.
-        </p>
-
-        <div style={{
-          display: 'flex', gap: 20,
-          overflowX: 'auto', scrollSnapType: 'x mandatory',
-          paddingBottom: 12, paddingLeft: 4, paddingRight: 4,
-          scrollbarWidth: 'thin', scrollbarColor: 'rgba(201,162,74,0.2) transparent',
-        }} className="why-carousel">
-          {whyUs.map((item, i) => {
-            const Icon = item.icon
-            return (
-              <div key={i} style={{
-                ...s.card, textAlign: 'center',
-                display: 'flex', flexDirection: 'column', alignItems: 'center',
-                minWidth: 240, flexShrink: 0,
-                scrollSnapAlign: 'start',
-              }}>
-                <div style={{
-                  width: 56, height: 56, borderRadius: 16,
-                  background: 'var(--landing-gold-dim)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  marginBottom: 20,
-                }}>
-                  <Icon size={26} style={{ color: 'var(--landing-gold)' }} />
-                </div>
-                <h4 style={{
-                  fontFamily: "'Fraunces', serif", fontWeight: 700,
-                  fontSize: '1.05rem', marginBottom: 8, margin: '0 0 8px',
-                }}>{item.title}</h4>
-                <p style={{
-                  color: 'var(--landing-text-muted)', fontSize: '0.85rem',
-                  lineHeight: 1.6, margin: 0,
-                }}>{item.desc}</p>
-              </div>
-            )
-          })}
+      <section style={{
+        padding: '100px 0 60px',
+        background: 'var(--landing-bg)',
+        overflow: 'hidden',
+      }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', marginBottom: 56 }}>
+          <p style={{ ...s.sectionSubtitle, marginBottom: 8, fontSize: '0.82rem', color: 'var(--landing-gold)' }}>
+            AVANTAJLAR
+          </p>
+          <h2 style={s.sectionTitle}>Neden <span style={s.goldText}>AltÜst?</span></h2>
+          <p style={s.sectionSubtitle}>
+            Sadece bir muhasebe yazılımı değil, işletmenizin dijital dönüşüm ortağı.
+          </p>
         </div>
+
+        <WhyUsCarousel />
       </section>
 
       {/* ===== FİYATLANDIRMA ===== */}
