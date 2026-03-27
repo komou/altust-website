@@ -1,7 +1,7 @@
 import {
   Users, Package, ShoppingCart, ShoppingBag, Landmark, FileText, BarChart3, Plug,
   CheckCircle2, ArrowRight, Star, ChevronDown, Mail, Phone, MapPin, Shield,
-  GitBranch, Zap, Clock,
+  Zap, Clock, Database, TrendingUp, Headphones, Globe,
 } from 'lucide-react'
 import MobileMenu from '@/components/landing/MobileMenu'
 import PricingToggle from '@/components/landing/PricingToggle'
@@ -12,12 +12,12 @@ const features = [
   {
     icon: Users,
     title: 'Cari Hesap Yönetimi',
-    desc: 'Müşteri ve tedarikçi hesaplarınızı detaylıca takip edin. Risk limitleri, şube yönetimi ve yetkili kişi bilgileri tek panelde.',
+    desc: 'Müşteri ve tedarikçi hesaplarınızı detaylıca takip edin. Risk limitleri, vadeli bakiye ve yetkili kişi bilgileri tek panelde.',
   },
   {
     icon: Package,
     title: 'Stok & Depo Takibi',
-    desc: 'Ürünlerinizi birim bazında yönetin, depo kontrolünü sağlayın. Barkod entegrasyonu ve anlık stok durumu.',
+    desc: 'Ürünlerinizi birim bazında yönetin, depo kontrolünü sağlayın. Anlık stok durumu ve otomatik uyarı bildirimleri.',
   },
   {
     icon: ShoppingCart,
@@ -109,11 +109,6 @@ const faqs = [
 
 const whyUs = [
   {
-    icon: GitBranch,
-    title: 'Çoklu Şube Desteği',
-    desc: 'Tek panelden tüm şubelerinizi yönetin, şube bazlı raporlar alın.',
-  },
-  {
     icon: Shield,
     title: 'Rol Tabanlı Yetkilendirme',
     desc: 'Ekip üyelerine özel erişim hakları tanımlayın, veri güvenliğini sağlayın.',
@@ -127,6 +122,26 @@ const whyUs = [
     icon: Clock,
     title: 'Hızlı Kurulum',
     desc: '5 dakikada hesabınızı oluşturun, verilerinizi aktarın ve kullanmaya başlayın.',
+  },
+  {
+    icon: Database,
+    title: 'Güvenli Altyapı',
+    desc: 'RLS ile veri izolasyonu, şifreli bağlantılar ve otomatik yedekleme.',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Ölçeklenebilir Yapı',
+    desc: 'İşletmeniz büyüdükçe platform sizinle büyür. Kullanıcı ve veri sınırı yok.',
+  },
+  {
+    icon: Headphones,
+    title: '7/24 Destek',
+    desc: 'Uzman destek ekibimiz sorularınızda her zaman yanınızda.',
+  },
+  {
+    icon: Globe,
+    title: "Türkiye'ye Uyumlu",
+    desc: "GİB, e-Fatura, e-Arşiv ve KVKK — Türkiye mevzuatıyla tam uyumlu.",
   },
 ]
 
@@ -300,7 +315,7 @@ export default function LandingPage() {
             color: 'var(--landing-text-muted)',
             lineHeight: 1.7, maxWidth: 560, margin: '0 auto 40px',
           }}>
-            KOBİ&apos;ler için tasarlanmış modern ön muhasebe ve finans yönetimi platformu.
+            Her ölçekteki işletme için tasarlanmış modern ön muhasebe ve finans yönetimi platformu.
             Siz işinize bakın, gerisini AltÜst halletsin.
           </p>
 
@@ -391,6 +406,137 @@ export default function LandingPage() {
               </div>
             )
           })}
+        </div>
+      </section>
+
+      {/* ===== RAPORLAR VİTRİNİ ===== */}
+      <section style={{
+        ...s.section, background: 'var(--landing-bg2)',
+        maxWidth: '100%', padding: '100px 24px',
+        borderTop: '1px solid var(--landing-border)',
+        borderBottom: '1px solid var(--landing-border)',
+      }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <p style={{ ...s.sectionSubtitle, marginBottom: 8, fontSize: '0.82rem', color: 'var(--landing-gold)' }}>
+            RAPORLAMA
+          </p>
+          <h2 style={s.sectionTitle}>İşletmenizin <span style={s.goldText}>Nabzını Tutun</span></h2>
+          <p style={s.sectionSubtitle}>
+            Anlık finansal veriler, cari bakiyeler ve nakit akış takibi tek ekranda.
+          </p>
+
+          <div className="reports-grid">
+
+            {/* Rapor 1: Aylık Gelir */}
+            <div style={{ ...s.card, background: 'var(--landing-bg3)', padding: 0, overflow: 'hidden' }}>
+              <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--landing-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#facc15' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ade80' }} />
+                </div>
+                <span style={{ fontSize: '0.72rem', color: 'var(--landing-text-muted)' }}>Aylık Gelir Raporu</span>
+                <span style={{ fontSize: '0.68rem', color: 'var(--landing-gold)', background: 'var(--landing-gold-dim)', padding: '2px 8px', borderRadius: 4 }}>CANLI</span>
+              </div>
+              <div style={{ padding: '20px 20px 12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 4 }}>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--landing-text-muted)' }}>Toplam Gelir</span>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--landing-green)' }}>↑ %18</span>
+                </div>
+                <div style={{ fontFamily: "'Fraunces', serif", fontWeight: 900, fontSize: '1.8rem', color: 'var(--landing-gold)', marginBottom: 20 }}>₺2.4M</div>
+                {/* Bar Chart */}
+                <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', height: 80 }}>
+                  {[
+                    { label: 'Eki', pct: 55 },
+                    { label: 'Kas', pct: 70 },
+                    { label: 'Ara', pct: 62 },
+                    { label: 'Oca', pct: 80 },
+                    { label: 'Şub', pct: 74 },
+                    { label: 'Mar', pct: 100 },
+                  ].map((bar, i) => (
+                    <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                      <div style={{ width: '100%', height: `${bar.pct * 0.72}px`, borderRadius: '4px 4px 0 0', background: i === 5 ? 'var(--landing-gold)' : 'rgba(201,162,74,0.25)', transition: 'all 0.3s' }} />
+                      <span style={{ fontSize: '0.58rem', color: 'var(--landing-text-muted)' }}>{bar.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Rapor 2: Cari Bakiye */}
+            <div style={{ ...s.card, background: 'var(--landing-bg3)', padding: 0, overflow: 'hidden' }}>
+              <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--landing-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#facc15' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ade80' }} />
+                </div>
+                <span style={{ fontSize: '0.72rem', color: 'var(--landing-text-muted)' }}>Cari Bakiye Raporu</span>
+                <span style={{ fontSize: '0.68rem', color: 'var(--landing-text-muted)' }}>4 kayıt</span>
+              </div>
+              <div style={{ padding: '12px 0' }}>
+                {[
+                  { name: 'ABC Lojistik A.Ş.', amount: '+₺184.500', positive: true },
+                  { name: 'Yıldız Gıda Ltd.', amount: '-₺62.300', positive: false },
+                  { name: 'Demir İnşaat', amount: '+₺310.000', positive: true },
+                  { name: 'XYZ Tekstil', amount: '-₺28.750', positive: false },
+                ].map((row, i) => (
+                  <div key={i} style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '10px 20px',
+                    borderBottom: i < 3 ? '1px solid var(--landing-border)' : 'none',
+                  }}>
+                    <div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 500 }}>{row.name}</div>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--landing-text-muted)', marginTop: 2 }}>{row.positive ? 'Alacak' : 'Borç'}</div>
+                    </div>
+                    <span style={{ fontSize: '0.88rem', fontWeight: 700, color: row.positive ? 'var(--landing-green)' : '#f87171', fontFamily: "'Fraunces', serif" }}>{row.amount}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Rapor 3: Nakit Akış */}
+            <div style={{ ...s.card, background: 'var(--landing-bg3)', padding: 0, overflow: 'hidden' }}>
+              <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--landing-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#facc15' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ade80' }} />
+                </div>
+                <span style={{ fontSize: '0.72rem', color: 'var(--landing-text-muted)' }}>Nakit Akış Takibi</span>
+                <span style={{ fontSize: '0.68rem', color: 'var(--landing-text-muted)' }}>Mart 2026</span>
+              </div>
+              <div style={{ padding: 20 }}>
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--landing-text-muted)' }}>Toplam Giriş</span>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--landing-green)', fontWeight: 700 }}>₺1.84M</span>
+                  </div>
+                  <div style={{ height: 8, borderRadius: 4, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                    <div style={{ width: '82%', height: '100%', background: 'var(--landing-green)', borderRadius: 4 }} />
+                  </div>
+                </div>
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--landing-text-muted)' }}>Toplam Çıkış</span>
+                    <span style={{ fontSize: '0.78rem', color: '#f87171', fontWeight: 700 }}>₺1.23M</span>
+                  </div>
+                  <div style={{ height: 8, borderRadius: 4, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                    <div style={{ width: '55%', height: '100%', background: '#f87171', borderRadius: 4 }} />
+                  </div>
+                </div>
+                <div style={{ borderTop: '1px solid var(--landing-border)', paddingTop: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--landing-text-muted)' }}>Net Nakit</span>
+                    <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 900, fontSize: '1.4rem', color: 'var(--landing-gold)' }}>₺610K</span>
+                  </div>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--landing-green)', marginTop: 4, textAlign: 'right' }}>↑ Geçen aya göre %12 artış</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -511,14 +657,19 @@ export default function LandingPage() {
         </p>
 
         <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20,
-        }} className="why-grid">
+          display: 'flex', gap: 20,
+          overflowX: 'auto', scrollSnapType: 'x mandatory',
+          paddingBottom: 12, paddingLeft: 4, paddingRight: 4,
+          scrollbarWidth: 'thin', scrollbarColor: 'rgba(201,162,74,0.2) transparent',
+        }} className="why-carousel">
           {whyUs.map((item, i) => {
             const Icon = item.icon
             return (
               <div key={i} style={{
                 ...s.card, textAlign: 'center',
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
+                minWidth: 240, flexShrink: 0,
+                scrollSnapAlign: 'start',
               }}>
                 <div style={{
                   width: 56, height: 56, borderRadius: 16,
@@ -705,7 +856,7 @@ export default function LandingPage() {
             {/* Info */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
               {[
-                { icon: Mail, label: 'E-posta', value: 'info@altust.app' },
+                { icon: Mail, label: 'E-posta', value: 'info@altust.com.tr' },
                 { icon: Phone, label: 'Telefon', value: '+90 (212) 000 00 00' },
                 { icon: MapPin, label: 'Adres', value: 'İstanbul, Türkiye' },
               ].map((info, i) => {
@@ -827,7 +978,7 @@ export default function LandingPage() {
                 lineHeight: 1.7, maxWidth: 280,
               }}>
                 Türkiye&apos;nin modern ön muhasebe ve finans yönetimi platformu.
-                KOBİ&apos;ler için tasarlandı.
+                Her ölçekteki işletme için tasarlandı.
               </p>
             </div>
 
@@ -900,7 +1051,6 @@ export default function LandingPage() {
       <style>{`
         @media (max-width: 1024px) {
           .pricing-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .why-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .footer-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
         @media (max-width: 768px) {
@@ -908,12 +1058,16 @@ export default function LandingPage() {
           .features-grid { grid-template-columns: 1fr !important; }
           .howit-grid { grid-template-columns: 1fr !important; }
           .pricing-grid { grid-template-columns: 1fr !important; }
-          .why-grid { grid-template-columns: 1fr !important; }
           .testimonials-grid { grid-template-columns: 1fr !important; }
           .contact-grid { grid-template-columns: 1fr !important; }
           .footer-grid { grid-template-columns: 1fr !important; }
           .form-row { grid-template-columns: 1fr !important; }
         }
+        .why-carousel::-webkit-scrollbar { height: 4px; }
+        .why-carousel::-webkit-scrollbar-track { background: transparent; }
+        .why-carousel::-webkit-scrollbar-thumb { background: rgba(201,162,74,0.25); border-radius: 4px; }
+        .reports-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        @media (max-width: 900px) { .reports-grid { grid-template-columns: 1fr !important; } }
         details summary::-webkit-details-marker { display: none; }
         details[open] summary svg { transform: rotate(180deg); }
         details summary svg { transition: transform 0.2s ease; }
