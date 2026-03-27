@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Shield, Zap, Clock, Database, TrendingUp, Headphones, Globe,
   FileText, BarChart3, Layers, ChevronLeft, ChevronRight,
@@ -59,37 +59,47 @@ const ITEMS = [
   },
 ]
 
-// Sentinel nodes for seamless infinite loop
-const EXTENDED = [ITEMS[ITEMS.length - 1], ...ITEMS, ITEMS[0]]
+const N = ITEMS.length
+// Sentinel: [clone-of-last, ...ITEMS, clone-of-first]
+// Indices: 0 = last clone, 1..N = real items, N+1 = first clone
+const EXTENDED = [ITEMS[N - 1], ...ITEMS, ITEMS[0]]
+
 const CARD_W = 380
 const GAP = 24
 const STEP = CARD_W + GAP
 
 export default function WhyUsCarousel() {
-  // idx 0 = clone of last, 1..ITEMS.length = real items, ITEMS.length+1 = clone of first
+  // Start at 1 (first real item)
   const [idx, setIdx] = useState(1)
   const [animated, setAnimated] = useState(true)
   const [paused, setPaused] = useState(false)
 
-  // After landing on sentinel, snap to real counterpart
+  // Prevent rapid-fire clicks from overshooting sentinel
+  const busy = useRef(false)
+
+  // ── Sentinel snap ──────────────────────────────────────────────
   useEffect(() => {
-    if (idx === ITEMS.length + 1) {
+    // Reached clone-of-first → snap to real first
+    if (idx >= N + 1) {
       const t = setTimeout(() => {
         setAnimated(false)
         setIdx(1)
-      }, 650)
+        busy.current = false
+      }, 660)
       return () => clearTimeout(t)
     }
-    if (idx === 0) {
+    // Reached clone-of-last → snap to real last
+    if (idx <= 0) {
       const t = setTimeout(() => {
         setAnimated(false)
-        setIdx(ITEMS.length)
-      }, 650)
+        setIdx(N)
+        busy.current = false
+      }, 660)
       return () => clearTimeout(t)
     }
   }, [idx])
 
-  // Re-enable animation after snap
+  // Re-enable CSS transition after instant snap
   useEffect(() => {
     if (!animated) {
       const t = setTimeout(() => setAnimated(true), 30)
@@ -97,25 +107,67 @@ export default function WhyUsCarousel() {
     }
   }, [animated])
 
+  // ── Navigation ─────────────────────────────────────────────────
   const next = useCallback(() => {
+    if (busy.current) return
+    busy.current = true
     setAnimated(true)
     setIdx(p => p + 1)
+    // Release lock after transition (unless sentinel snap holds it longer)
+    const t = setTimeout(() => { busy.current = false }, 700)
+    return () => clearTimeout(t)
   }, [])
 
   const prev = useCallback(() => {
+    if (busy.current) return
+    busy.current = true
     setAnimated(true)
     setIdx(p => p - 1)
+    const t = setTimeout(() => { busy.current = false }, 700)
+    return () => clearTimeout(t)
   }, [])
 
-  // Auto-advance
+  // ── Auto-advance ───────────────────────────────────────────────
   useEffect(() => {
     if (paused) return
     const t = setInterval(next, 4000)
     return () => clearInterval(t)
   }, [paused, next])
 
-  const currentDot = Math.max(0, Math.min(ITEMS.length - 1, idx - 1))
+  // ── Dot index (0-based) ────────────────────────────────────────
+  // Clamp to [0, N-1] so sentinels map to their real counterpart
+  const dot = Math.max(0, Math.min(N - 1, idx - 1))
+
   const offset = -(idx * STEP)
+
+  // ── Arrow button style ─────────────────────────────────────────
+  const arrowStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '44%',
+    transform: 'translateY(-50%)',
+    zIndex: 10,
+    width: 48,
+    height: 48,
+    borderRadius: '50%',
+    background: 'rgba(12,13,15,0.85)',
+    border: '1px solid rgba(201,162,74,0.35)',
+    color: '#c9a24a',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backdropFilter: 'blur(8px)',
+    transition: 'background 0.2s, border-color 0.2s',
+  }
+
+  const hoverIn = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.background = 'rgba(201,162,74,0.18)'
+    e.currentTarget.style.borderColor = 'rgba(201,162,74,0.65)'
+  }
+  const hoverOut = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.background = 'rgba(12,13,15,0.85)'
+    e.currentTarget.style.borderColor = 'rgba(201,162,74,0.35)'
+  }
 
   return (
     <div
@@ -124,13 +176,15 @@ export default function WhyUsCarousel() {
       onMouseLeave={() => setPaused(false)}
     >
       {/* ── Track ── */}
-      <div style={{ overflow: 'hidden', paddingLeft: 64, paddingRight: 0 }}>
+      <div style={{ overflow: 'hidden', paddingLeft: 64 }}>
         <div
           style={{
             display: 'flex',
             gap: GAP,
             transform: `translateX(${offset}px)`,
-            transition: animated ? 'transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none',
+            transition: animated
+              ? 'transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+              : 'none',
             willChange: 'transform',
           }}
         >
@@ -146,23 +200,28 @@ export default function WhyUsCarousel() {
                   background: isActive
                     ? 'rgba(201,162,74,0.08)'
                     : 'rgba(255,255,255,0.025)',
-                  border: `1px solid ${isActive ? 'rgba(201,162,74,0.4)' : 'rgba(255,255,255,0.07)'}`,
+                  border: `1px solid ${isActive
+                    ? 'rgba(201,162,74,0.4)'
+                    : 'rgba(255,255,255,0.07)'}`,
                   borderRadius: 20,
                   padding: '36px 32px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'flex-start',
-                  transition: 'background 0.4s ease, border-color 0.4s ease',
-                  boxShadow: isActive ? '0 0 0 1px rgba(201,162,74,0.15), 0 20px 40px rgba(0,0,0,0.3)' : 'none',
+                  transition: 'background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease',
+                  boxShadow: isActive
+                    ? '0 0 0 1px rgba(201,162,74,0.12), 0 20px 40px rgba(0,0,0,0.3)'
+                    : 'none',
                 }}
               >
-                {/* Icon */}
                 <div
                   style={{
                     width: 60,
                     height: 60,
                     borderRadius: 16,
-                    background: isActive ? 'rgba(201,162,74,0.2)' : 'rgba(201,162,74,0.09)',
+                    background: isActive
+                      ? 'rgba(201,162,74,0.2)'
+                      : 'rgba(201,162,74,0.09)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -173,7 +232,6 @@ export default function WhyUsCarousel() {
                   <Icon size={26} color="#c9a24a" />
                 </div>
 
-                {/* Title */}
                 <h4
                   style={{
                     fontFamily: "'Fraunces', serif",
@@ -187,7 +245,6 @@ export default function WhyUsCarousel() {
                   {item.title}
                 </h4>
 
-                {/* Desc */}
                 <p
                   style={{
                     color: isActive ? '#9a9590' : '#5a5650',
@@ -209,33 +266,9 @@ export default function WhyUsCarousel() {
       <button
         onClick={() => { prev(); setPaused(true); setTimeout(() => setPaused(false), 5000) }}
         aria-label="Önceki"
-        style={{
-          position: 'absolute',
-          left: 14,
-          top: '44%',
-          transform: 'translateY(-50%)',
-          zIndex: 10,
-          width: 48,
-          height: 48,
-          borderRadius: '50%',
-          background: 'rgba(12,13,15,0.85)',
-          border: '1px solid rgba(201,162,74,0.35)',
-          color: '#c9a24a',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backdropFilter: 'blur(8px)',
-          transition: 'background 0.2s, border-color 0.2s',
-        }}
-        onMouseEnter={e => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(201,162,74,0.18)'
-          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(201,162,74,0.6)'
-        }}
-        onMouseLeave={e => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(12,13,15,0.85)'
-          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(201,162,74,0.35)'
-        }}
+        style={{ ...arrowStyle, left: 14 }}
+        onMouseEnter={hoverIn}
+        onMouseLeave={hoverOut}
       >
         <ChevronLeft size={22} />
       </button>
@@ -244,33 +277,9 @@ export default function WhyUsCarousel() {
       <button
         onClick={() => { next(); setPaused(true); setTimeout(() => setPaused(false), 5000) }}
         aria-label="Sonraki"
-        style={{
-          position: 'absolute',
-          right: 14,
-          top: '44%',
-          transform: 'translateY(-50%)',
-          zIndex: 10,
-          width: 48,
-          height: 48,
-          borderRadius: '50%',
-          background: 'rgba(12,13,15,0.85)',
-          border: '1px solid rgba(201,162,74,0.35)',
-          color: '#c9a24a',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backdropFilter: 'blur(8px)',
-          transition: 'background 0.2s, border-color 0.2s',
-        }}
-        onMouseEnter={e => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(201,162,74,0.18)'
-          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(201,162,74,0.6)'
-        }}
-        onMouseLeave={e => {
-          ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(12,13,15,0.85)'
-          ;(e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(201,162,74,0.35)'
-        }}
+        style={{ ...arrowStyle, right: 14 }}
+        onMouseEnter={hoverIn}
+        onMouseLeave={hoverOut}
       >
         <ChevronRight size={22} />
       </button>
@@ -291,17 +300,22 @@ export default function WhyUsCarousel() {
           <button
             key={i}
             onClick={() => {
+              if (busy.current) return
+              busy.current = true
               setAnimated(true)
               setIdx(i + 1)
               setPaused(true)
-              setTimeout(() => setPaused(false), 5000)
+              setTimeout(() => {
+                busy.current = false
+                setPaused(false)
+              }, 5000)
             }}
             aria-label={`Slide ${i + 1}`}
             style={{
-              width: i === currentDot ? 28 : 8,
+              width: i === dot ? 28 : 8,
               height: 8,
               borderRadius: 4,
-              background: i === currentDot ? '#c9a24a' : 'rgba(255,255,255,0.15)',
+              background: i === dot ? '#c9a24a' : 'rgba(255,255,255,0.15)',
               border: 'none',
               cursor: 'pointer',
               padding: 0,
